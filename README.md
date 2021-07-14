@@ -5,7 +5,7 @@
 *O que é o Kubernetes?*
 
 Explicando por um nível mais alto, é uma ferramenta open source utilizada para 
-gerenciar aplicações em *containers*.
+orquestrar aplicações em *containers*.
 
 Fazendo uma analogia com um serviço de entrega, nossos passos para
 enviar uma encomenda seriam: 
@@ -80,13 +80,15 @@ respeitada a quantidade de 3 réplicas sempre rodando.
 ### Service
 
 Nós aprendemos que *pods* podem ficar indisponíveis e quando isso acontece, 
-*kubernetes* cuidará para que outro *pod* fique em seu lugar. Mas esse novo *pod* terá um novo IP,
-então como ficam as aplicações que estavam acessando aquele endereço?
+*kubernetes* cuidará para que outro *pod* fique em seu lugar. Mas esse novo *pod* terá um novo IP.
+Então, como ficam as aplicações que estavam acessando aquele endereço?
 
 Podemos definir um *Service*, que será responsável por fornecer um IP e um nome DNS fixo para acessar um conjunto de *Pods*.
 Assim, o *Kubernets* poderá balancear as *requests* entre os *Pods*.
 
 <img src="https://user-images.githubusercontent.com/9805258/124047589-ec011280-d9ea-11eb-8110-ed68327b8aff.png" width="40%" height="40%">
+
+Então, podemos entender o *Service* como uma abstração, onde podemos definir um conjunto lógico de *Pods* que podem ser adicionados ou removidos de forma dinâmica e transparente para o usuário por meio de estratégias de balanceamento. Esse conjunto lógico de *Pods* é definido através de *Labels*, que serão mais detalhadas no tópico abaixo.
 
 ### Labels
 *Labels* são formas de identificar, organizar e selecionar objetos.
