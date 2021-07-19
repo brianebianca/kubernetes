@@ -4,7 +4,7 @@
 
 *O que é o Kubernetes?*
 
-Explicando por um nível mais alto, é uma ferramenta open source utilizada para 
+É uma ferramenta open source utilizada para 
 orquestrar aplicações em *containers*.
 
 Fazendo uma analogia com um serviço de entrega, nossos passos para
@@ -24,6 +24,7 @@ entre outras coisas.
 Um *Cluster* é formado pelo Control Plane e um conjunto de nós.
 O *Control Plane* é como se fosse o cérebro do *cluster*. Nessa camada que são tomadas
 decisões como agendamento de *pods*, monitoramento do *cluster* e respostas aos eventos.
+E dentro do *Control Plan* do *Kubernetes*, existe um servidor de API, que disponibiliza uma API HTTP, onde o usuário pode manipular e consultar o estado de objetos dentro do *Kubernetes*.
 
 <img src="https://user-images.githubusercontent.com/9805258/124046641-cd9a1780-d9e8-11eb-8c69-ccf02570bb7c.png" width="50%" height="50%">
 
@@ -38,7 +39,7 @@ Nós são formados basicamente por:
 * *Kubelet*
 
 Ele registra o nó no *cluster* e adiciona os requisitos necessários como CPU, RAM e outros recursos.
-Aguarda instruções da *API Server*, que envia os *pods*. O *Kubelet* executa as *Pods* e reporta tudo para o *Control Plane*.
+O *Kubelet* executa as *Pods* e reporta tudo para o *Control Plane*.
 
 * *Container Runtime*
 
@@ -66,16 +67,28 @@ E o mesmo serve para remover escalabilidade, para isso você deve remover *pods*
 
 ### Declarativo vs Imperativo
 
+No modelo imperativo, definimos uma uma lista de comandos de como fazer com que a aplicação fique em um determinado estado.
+Exemplo de comando imperativo:
+
+```
+kubectl create deployment hello-node --image=k8s.gcr.io/echoserver:1.4
+```
+
 O *Kubernetes* trabalha com um modelo declarativo, onde descrevemos o estado desejado da nossa aplicação.
-Para fazer isso, criamos um manifesto declarativo. 
-Esse manifesto **não** é uma lista de comandos de como fazer com que a aplicação fique em um determinado estado, como é no 
-modo imperativo. Mas sim, um documento onde falamos como deve ser o estado da aplicação.
+Para fazer isso, criamos um manifesto declarativo, que é um documento onde falamos como deve ser o estado da aplicação.
 Por exemplo, preciso que sempre tenham 3 réplicas da aplicação rodando.
 O *Kubernetes* vai cuidar para que, caso uma réplica fique indisponível, outra fique em seu lugar e seja 
 respeitada a quantidade de 3 réplicas sempre rodando.
 
-![image](https://user-images.githubusercontent.com/9805258/124047493-b65c2980-d9ea-11eb-8a04-0f7ec1226c8b.png)
 
+Trecho de exemplo de manifesto declarativo:
+```
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+```
 
 ### Service
 
@@ -84,16 +97,16 @@ Nós aprendemos que *pods* podem ficar indisponíveis e quando isso acontece,
 Então, como ficam as aplicações que estavam acessando aquele endereço?
 
 Podemos definir um *Service*, que será responsável por fornecer um IP e um nome DNS fixo para acessar um conjunto de *Pods*.
-Assim, o *Kubernets* poderá balancear as *requests* entre os *Pods*.
+Assim, o *Kubernetes* poderá balancear as *requests* entre os *Pods*. É importante enfatizar que além do *LoadBalancer*, existem vários tipos de *Services* no *Kubernetes*.
 
 <img src="https://user-images.githubusercontent.com/9805258/124047589-ec011280-d9ea-11eb-8110-ed68327b8aff.png" width="40%" height="40%">
 
 Então, podemos entender o *Service* como uma abstração, onde podemos definir um conjunto lógico de *Pods* que podem ser adicionados ou removidos de forma dinâmica e transparente para o usuário por meio de estratégias de balanceamento. Esse conjunto lógico de *Pods* é definido através de *Labels*, que serão mais detalhadas no tópico abaixo.
 
-### Labels
-*Labels* são formas de identificar, organizar e selecionar objetos.
-Por exemplo, eu posso ligar alguns *Pods* ao Serviço dando a eles o mesmo *Label*. Dessa forma, 
-o serviço saberá quais *Pods* pertencem a ele. 
+### Labels and selectors
+
+*Labels* são formas de identificar e organizar objetos.
+Uma vez definido um conjunto lógico de *Pods* por meio de uma *Label*, para selecioná-los fazemos uso de *Label Selectors*. Por exemplo, através do *Label Selector* que um *Service* seleciona os Pods para gerenciamento. Dessa forma, o *Service* saberá quais *Pods* pertencem a ele.
 
 Observe que, no exemplo abaixo, todos os *Pods* com as *Labels* `prod` e `1.3` são reconhecidas pelo serviço.
 
